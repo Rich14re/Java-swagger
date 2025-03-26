@@ -13,3 +13,56 @@ paths:
       tags:
         - SpareParts
       operationId: getAllParts
+      responses:
+        "200":
+          description: "Условный ответ со списком запчастей"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpareParts"
+        "default": #всё что не 200
+          description: Всё нестандартное
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+         
+
+components:
+  schemas:
+    SparePart:
+      type: object
+      required:
+        - name
+        - status 
+      properties:
+        spare_id:
+          type: string
+          example: 42abcd2b-8b9c-4af9-88f7-0bc100fc74b
+        name:
+          type: string
+          example: Дверь
+        status:
+          type: string
+          enum:
+           - new
+           - old
+           - broken
+          description: Состояние запчасти
+        created_at:
+           type: string
+           format: 2025-03-01T15:00:00:01
+    SpareParts:
+        type: array
+        items:
+          $ref: "#/components/schemas/SparePart" #ссылаемся на запчасть
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
