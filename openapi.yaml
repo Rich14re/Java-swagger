@@ -1,0 +1,15 @@
+openapi: 3.0.3
+info:
+  title: Магазин запчастей
+  description: Развалов Никита 23-ИСбо-1
+  version: 0.0.1
+servers:
+  - url: http://localhost:8000/api/v1/
+    description: dev server
+paths:
+  /sparts:
+    get:
+      summary: Метод получения запчастей
+      tags:
+        - SpareParts
+      operationId: getAllParts
