@@ -214,6 +214,30 @@ paths:
               application/json:
                 schema:
                   $ref: "#/components/schemas/Error"
+    post:
+      summary: Метод добавления запчасти в корзину
+      tags:
+        - Cart
+      operationId: addToCart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartItem"
+      responses:
+        "200":
+          description: "Запчасть добавлена в корзину"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "default":
+          description: всё что не 200
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   
 
 components:
