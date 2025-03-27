@@ -171,6 +171,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    delete:
+      summary: Метод удаления
+      tags:
+        - Orders
+      operationId: deleteOrderById
+      parameters: 
+        - name: order_id
+          in: path
+          required: true
+          description: Идентификатор заказа
+          schema:
+            type: string
+          example: 42abcd2b-8b9c-4af9-88f7-0bc100fc74b
+      responses:
+        "200":
+          description: "Успешное удаление"
+          content:
+            application/json: {} #ничё не возвращаем
+        "default": #всё что не 200
+          description: Всё нестандартное
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   
 
 components:
