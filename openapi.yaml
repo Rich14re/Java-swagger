@@ -101,6 +101,50 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /orders:
+    get:
+      summary: Получение списка заказов
+      tags:
+        - Orders
+      operationId: getAllOrders
+      responses:
+        "200":
+          description: "Список заказов"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Orders"
+        "default":
+          description: всё нестандартное
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Метод создания заказа
+      tags:
+        - Orders
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        "201":
+          description: "Заказ создан"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "default":
+          description: всё нестандартное
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
 
 components:
   schemas:
@@ -130,6 +174,39 @@ components:
         type: array
         items:
           $ref: "#/components/schemas/SparePart" #ссылаемся на запчасть
+    Order:
+      type: object
+      required:
+        - order_id
+        - spareparts
+        - price
+      properties:
+        order_id:
+          type: string
+          example: 42abcd2b-8b9c-4af9-88f7-0bc100fc74b
+        spareparts:
+          type: array
+          items: 
+            $ref: "#/components/schemas/SparePart"
+        price:
+            type: number
+            format: float
+            example: 5500.59
+        status:
+            enum:
+            - pending
+            - processing
+            - shipped
+            - delivered
+            description: Статус заказа
+        created_at:
+            type: string
+            format: date-time
+            example: "2025-03-27T12:00:00Z"
+    Orders:
+        type: array
+        items:
+          $ref: "#/components/schemas/Order" #ссылаемся на запчасть
     Error:
       type: object
       required:
