@@ -238,7 +238,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  
+  /cart/{cart_item_id}:
+    delete:
+      summary: Удаление запчасти из корзины
+      tags:
+        - Cart
+      operationId: removeFromCart
+      parameters:
+        - name: cart_item_id
+          in: path
+          required: true
+          description: Идентификатор позиции в корзине
+          schema:
+            type: string
+          example: "abcd-1234-efgh-5678"
+      responses:
+        "200":
+          description: "Запчасть удалена из корзины"
+          content:
+            application/json: {}
+        "default":
+          description: всё что не 200
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 components:
   schemas:
