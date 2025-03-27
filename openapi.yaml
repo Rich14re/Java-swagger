@@ -166,7 +166,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Order"
         "default":
-          description: Ошибка
+          description: всё что не 200
           content:
             application/json:
               schema:
@@ -195,6 +195,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /cart:
+    get:
+      summary: Метод получения содержимого корзины
+      tags: 
+        - Cart
+      operationId: getCart
+      responses:
+          "200":
+            description: "Информация о заказе"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Cart"
+          "default":
+            description: всё что не 200
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
   
 
 components:
@@ -268,3 +287,31 @@ components:
           type: integer
         message:
           type: string
+    CartItem:
+      type: object
+      required:
+        - spare_id
+        - quantity
+      properties:
+        cart_item_id:
+          type: string
+          example: "abc1-1234-efgh-5678"
+        spare_id:
+          type: string
+          example: "42abcd2b-8b9c-4af9-88f7-0bc100fc74b"
+        quantity:
+          type: integer
+          example: 2
+    Cart:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItem"
+        total_price:
+          type: number
+          format: float
+          example: 1500.75
