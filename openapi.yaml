@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Магазин запчастей
+  title: Магазин автозапчастей
   description: Развалов Никита 23-ИСбо-1
   version: 0.0.1
 servers:
@@ -13,13 +13,26 @@ paths:
       tags:
         - SpareParts
       operationId: getAllParts
+      parameters:
+        - name: page
+          in: query
+          description: Номер страницы
+          schema:
+            type: integer
+            example: 1
+        - name: page_size
+          in: query
+          description: Количество элементов на странице
+          schema:
+            type: integer
+            example: 5
       responses:
         "200":
           description: "Условный ответ со списком запчастей"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SpareParts"
+                $ref: "#/components/schemas/SparePagination"
         "default": #всё что не 200
           description: Всё нестандартное
           content:
@@ -43,21 +56,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SparePart"
+                properties:
+                  pagination:
+                    $ref: "#/components/schemas/SparePagination"
         "default": #всё что не 200
           description: Всё нестандартное
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /sparts/{spare_id}:
+  /sparts/{articul}:
     get:
       summary: Метод получения запчасти по идентификатору
       tags:
         - SpareParts
       operationId: getAllPartsById
       parameters: 
-        - name: spare_id
+        - name: articul
           in: path
           required: true
           description: Идентификатор запчасти
@@ -83,7 +98,7 @@ paths:
         - SpareParts
       operationId: deleteSparePartById
       parameters: 
-        - name: spare_id
+        - name: articul
           in: path
           required: true
           description: Идентификатор запчасти
@@ -107,13 +122,26 @@ paths:
       tags:
         - Orders
       operationId: getAllOrders
+      parameters:
+        - name: page
+          in: query
+          description: Номер страницы
+          schema:
+            type: integer
+            example: 1
+        - name: page_size
+          in: query
+          description: Количество элементов на странице
+          schema:
+            type: integer
+            example: 5
       responses:
         "200":
           description: "Список заказов"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Orders"
+                $ref: "#/components/schemas/OrderPagination"
         "default":
           description: всё нестандартное
           content:
@@ -172,7 +200,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     delete:
-      summary: Метод удаления
+      summary: Метод удаления заказа
       tags:
         - Orders
       operationId: deleteOrderById
@@ -269,25 +297,27 @@ components:
     SparePart:
       type: object
       required:
+        - articul
         - name
+        - price
         - status 
       properties:
-        spare_id:
+        articul:
           type: string
-          example: 42abcd2b-8b9c-4af9-88f7-0bc100fc74b
+          example: MR497143
         name:
           type: string
           example: Дверь
+        price:
+          type: integer
+          format: float
+          example: 5000.59
         status:
           type: string
           enum:
            - new
            - old
-           - broken
           description: Состояние запчасти
-        created_at:
-           type: string
-           format: 2025-03-01T15:00:00:01
     SpareParts:
         type: array
         items:
@@ -295,27 +325,21 @@ components:
     Order:
       type: object
       required:
-        - order_id
         - spareparts
-        - price
+        - amount
       properties:
-        order_id:
-          type: string
-          example: 42abcd2b-8b9c-4af9-88f7-0bc100fc74b
         spareparts:
           type: array
           items: 
             $ref: "#/components/schemas/SparePart"
-        price:
+        amount:
             type: number
             format: float
-            example: 5500.59
+            example: 5000.59
         status:
             enum:
-            - pending
             - processing
-            - shipped
-            - delivered
+            - completed
             description: Статус заказа
         created_at:
             type: string
@@ -338,15 +362,15 @@ components:
     CartItem:
       type: object
       required:
-        - spare_id
+        - articul
         - quantity
       properties:
         cart_item_id:
           type: string
           example: "abc1-1234-efgh-5678"
-        spare_id:
+        articul:
           type: string
-          example: "42abcd2b-8b9c-4af9-88f7-0bc100fc74b"
+          example: "MR497143"
         quantity:
           type: integer
           example: 2
@@ -359,7 +383,39 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CartItem"
+    SparePagination:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Общее количество запчастей
+          example: 1
+        previous:
+          type: string
+          nullable: true
+          description: Ссылка на предыдущую запчасть
+          example: null
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/SparePart"
+    OrderPagination:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Общее количество заказов
+          example: 1
+        previous:
+          type: string
+          nullable: true
+          description: Ссылка на предыдущий заказ
+          example: null
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
         total_price:
           type: number
           format: float
-          example: 1500.75
+          example: 5000.59
