@@ -229,13 +229,26 @@ paths:
       tags: 
         - Cart
       operationId: getCart
+      parameters:
+        - name: page
+          in: query
+          description: Номер страницы
+          schema:
+            type: integer
+            example: 1
+        - name: page_size
+          in: query
+          description: Количество элементов на странице
+          schema:
+            type: integer
+            example: 5
       responses:
           "200":
             description: "Информация о заказе"
             content:
               application/json:
                 schema:
-                  $ref: "#/components/schemas/Cart"
+                  $ref: "#/components/schemas/CartPagination"
           "default":
             description: всё что не 200
             content:
@@ -272,6 +285,14 @@ paths:
       tags:
         - Cart
       operationId: removeFromCart
+      parameters:
+        - name: spare_id
+          in: path
+          required: true
+          description: Идентификатор запчасти
+          schema:
+            type: string
+          example: "42abcd2b-8b9c-4af9-88f7-0bc100fc74b"
       responses:
         "200":
           description: "Запчасть удалена из корзины"
@@ -406,3 +427,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Order"
+    CartPagination:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Общее количество элементов в корзине
+          example: 1
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItem"
