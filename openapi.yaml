@@ -158,7 +158,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Order"
+              $ref: "#/components/schemas/OrderPost"
       responses:
         "201":
           description: "Заказ создан"
@@ -265,7 +265,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CartItem"
+              $ref: "#/components/schemas/CartItemResp"
       responses:
         "200":
           description: "Запчасть добавлена в корзину"
@@ -339,6 +339,18 @@ components:
         type: array
         items:
           $ref: "#/components/schemas/SparePart" #ссылаемся на запчасть
+    SparePartOrder:
+      type: object
+      required:
+        - id
+        - count
+      properties:
+        id:
+          type: string
+          example: "42abcd2b-8b9c-4af9-88f7-0bc100fc74b"
+        count:
+          type: integer
+          example: 1
     Order:
       type: object
       required:
@@ -347,21 +359,30 @@ components:
       properties:
         spareparts:
           type: array
-          items: 
+          items:
             $ref: "#/components/schemas/SparePart"
         amount:
-            type: number
-            format: float
-            example: 5000.59
+          type: number
+          format: float
+          example: 5000.59
         status:
-            enum:
+          enum:
             - processing
             - completed
-            description: Статус заказа
+          description: Статус заказа
         created_at:
-            type: string
-            format: date-time
-            example: "2025-03-27T12:00:00Z"
+          type: string
+          format: date-time
+          example: "2025-03-27T12:00:00Z"
+    OrderPost:
+      type: object
+      required:
+        - spareparts
+      properties:
+        spareparts:
+          type: array
+          items:
+            $ref: "#/components/schemas/SparePartOrder"
     Orders:
         type: array
         items:
@@ -383,6 +404,7 @@ components:
         - name
         - spare_id
         - quantity
+        - price
       properties:
         articul:
           type: string
@@ -396,15 +418,34 @@ components:
         quantity:
           type: integer
           example: 2
+        price:
+          type: integer
+          example: 5000
+    CartItemResp:
+      type: object
+      required:
+        - spare_id
+        - quantity
+      properties:
+        spare_id:
+          type: string
+          example: "42abcd2b-8b9c-4af9-88f7-0bc100fc74b"
+        quantity:
+          type: integer
+          example: 2
     Cart:
       type: object
       required:
         - items
+        - amount
       properties:
         items:
           type: array
           items:
             $ref: "#/components/schemas/CartItem"
+        amount:
+          type: integer
+          example: 5000
     SparePagination:
       type: object
       properties:
@@ -426,7 +467,7 @@ components:
         results:
           type: array
           items:
-            $ref: "#/components/schemas/Order"
+            $ref: "#/components/schemas/OrderPost"
     CartPagination:
       type: object
       properties:
@@ -438,3 +479,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CartItem"
+        amount:
+          type: integer
+          example: 5000
